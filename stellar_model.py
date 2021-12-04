@@ -6,7 +6,6 @@
 
 import numpy as np
 from enum import Enum
-from planetary_model import Planet
 
 LY_IN_PARSEC = 3.26
 METERS_IN_LY = 9.461e15
@@ -86,9 +85,10 @@ class EM_Wave(Enum):
     IR = 8
 
 
-class Stellar_Data_Analyzer:
+class Stellar_Model:
     def analyze_stellar_data(self, name, parallax_arcseconds, peak_wavelength_nm, flux, metallicity):
         """Analyzes the stellar data and makes calculations about the star based on provided user info"""
+
         self.name = name
         self.parallax = parallax_arcseconds
         self.peak_weavelength_nm = peak_wavelength_nm
@@ -116,7 +116,7 @@ class Stellar_Data_Analyzer:
     def calculate_distance(self):
         """Distance in Light Years is calculated by dividing 3.26 by parallax in arc-seconds"""
 
-        ly = round(LY_IN_PARSEC / self.parallax, 3)
+        ly = (LY_IN_PARSEC / self.parallax)
         meters = ly * METERS_IN_LY
         return (ly, meters)
 
@@ -124,7 +124,7 @@ class Stellar_Data_Analyzer:
         """Luminosity is calculated using Flux and distance. L = Flux x 4 x PI x Distance^2"""
 
         l = self.flux * 4 * np.pi * pow(self.distance_m, 2)
-        l_solar = round(l / SOLAR_LUMINOSITY, 3)
+        l_solar = (l / SOLAR_LUMINOSITY)
         return (l, l_solar)
 
     def calculate_temperature(self):
@@ -175,12 +175,9 @@ class Stellar_Data_Analyzer:
         else:
             self.luminosity_class = Luminosity_Class.UNKNOWN
 
-        theoretical_value = 0.0002 * self.temperature_k - 1.047
-        print(f"Theoretical Value:{theoretical_value}")
-
     def identify_spectral_classes(self):
         """Identify Spectral Class"""
-        print(self.temperature_k, F_CLASS_MIN_TEMP, F_CLASS_MAX_TEMP)
+
         if self.temperature_k in range(O_CLASS_MIN_TEMP, O_CLASS_MAX_TEMP):
             self.spectral_class = Spectral_Class.O
         elif self.temperature_k in range(B_CLASS_MIN_TEMP, B_CLASS_MAX_TEMP):
@@ -241,3 +238,17 @@ class Stellar_Data_Analyzer:
         print(f"Spectral Class: {self.spectral_class.name}")
         print(f"EM Wave Type: {self.em_wave.name}")
         print(f"Check for Habitable Worlds: {self.habitablity_check}")
+
+        return [
+            self.name,
+            self.parallax,
+            self.peak_weavelength_nm,
+            self.flux,
+            self.metallicity,
+            self.spectral_class,
+            self.luminosity_class,
+            self.mass_solar,
+            self.radius_solar,
+            self.lifetime_myr,
+            self.em_wave,
+        ]
